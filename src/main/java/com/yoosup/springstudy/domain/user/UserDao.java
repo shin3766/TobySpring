@@ -3,8 +3,14 @@ package com.yoosup.springstudy.domain.user;
 import java.sql.*;
 
 public class UserDao {
+    private SimpleConnectionMaker simpleConnectionMaker;
+
+    public UserDao() {
+        simpleConnectionMaker = new SimpleConnectionMaker();
+    }
+
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id, name, password) values (?,?,?)");
@@ -19,7 +25,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException{
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id = ?");
@@ -38,13 +44,23 @@ public class UserDao {
 
         return user;
     }
-
-    private Connection getConnection() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/springStudy", "root", "ss0920");
-        return c;
-    }
+//
+//    public class NUserDao extends UserDao {
+//
+//        @Override
+//        public Connection getConnection() throws SQLException, ClassNotFoundException {
+//            // N사 DB connection 생성 코드
+//            return null;
+//        }
+//    }
+//
+//    public class DUserDao extends UserDao {
+//        @Override
+//        public Connection getConnection() throws SQLException, ClassNotFoundException {
+//            // D사 DB connection 생성 코드
+//            return null;
+//        }
+//    }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserDao dao = new UserDao();
