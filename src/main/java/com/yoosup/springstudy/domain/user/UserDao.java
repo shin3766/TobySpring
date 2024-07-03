@@ -3,22 +3,18 @@ package com.yoosup.springstudy.domain.user;
 import java.sql.*;
 
 public class UserDao {
-    private static UserDao INSTANCE;
-
-    private UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
-    }
-
-    public static synchronized UserDao getInstance() {
-        if (INSTANCE == null) INSTANCE = new UserDao(???);
-        return INSTANCE;
-    }
-
     private ConnectionMaker connectionMaker;
+    private Connection c;
+    private User user;
 
-//    public UserDao(ConnectionMaker connectionMaker) {
-//        this.connectionMaker = connectionMaker;
-//    }
+    public User get(String id) throws ClassNotFoundException, SQLException {
+        this.c = connectionMaker.makeConnection();
+        this.user = new User();
+        this.user.setId(rs.getString("id"));
+        this.user.setName(rs.getString("name"));
+        this.user.setPassword(rs.getString("password"));
+        return this.user;
+    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection c = connectionMaker.makeConnection();
