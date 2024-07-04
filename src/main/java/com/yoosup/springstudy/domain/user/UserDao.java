@@ -1,5 +1,6 @@
 package com.yoosup.springstudy.domain.user;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
