@@ -3,7 +3,7 @@ package com.yoosup.springstudy.domain.user;
 import javax.sql.DataSource;
 import java.sql.*;
 
-abstract class UserDao {
+public class UserDao {
 
     private DataSource dataSource;
 
@@ -54,7 +54,8 @@ abstract class UserDao {
         try {
             c = dataSource.getConnection();
 
-            ps = makeStatement(c);
+            StatementStrategy strategy = new DeleteAllStatement();
+            ps = strategy.makePreparedStatement(c);
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -68,7 +69,12 @@ abstract class UserDao {
         c.close();
     }
 
-    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;
+    public class DeleteAllStatement implements StatementStrategy {
+        public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+            PreparedStatement ps = c.prepareStatement("delete from users");
+            return ps;
+        }
+    }
 
     public int getCount() throws SQLException{
         Connection c = null;
