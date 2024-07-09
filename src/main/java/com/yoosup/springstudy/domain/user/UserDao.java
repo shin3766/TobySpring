@@ -46,22 +46,50 @@ public class UserDao {
 
         return user;
     }
-//
-//    public class NUserDao extends UserDao {
-//
-//        @Override
-//        public Connection getConnection() throws SQLException, ClassNotFoundException {
-//            // N사 DB connection 생성 코드
-//            return null;
-//        }
-//    }
-//
-//    public class DUserDao extends UserDao {
-//        @Override
-//        public Connection getConnection() throws SQLException, ClassNotFoundException {
-//            // D사 DB connection 생성 코드
-//            return null;
-//        }
-//    }
 
+    public void deleteAll() throws SQLException {
+        Connection c = null;
+        PreparedStatement ps = null;
+
+        try {
+            c = dataSource.getConnection();
+            ps = c.prepareStatement("delete from users");
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+        ps.close();
+        c.close();
+    }
+
+    public int getCount() throws SQLException{
+        Connection c = dataSource.getConnection();
+
+        PreparedStatement ps = c.prepareStatement("select count(*) from users");
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        rs.close();
+        ps.close();
+        c.close();
+
+        return count;
+    }
 }
