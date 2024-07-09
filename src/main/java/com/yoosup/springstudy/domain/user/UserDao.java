@@ -11,22 +11,25 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = dataSource.getConnection();
+    public void add(final User user) throws SQLException {
+        class AddStatement implements StatementStrategy {
+            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                PreparedStatement ps =
+                        c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
 
-        PreparedStatement ps = c.prepareStatement(
-                "insert into users(id, name, password) values (?,?,?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
+                ps.setString(1, user.getId());
+                ps.setString(2, user.getName());
+                ps.setString(3, user.getPassword());
 
-        ps.executeUpdate();
+                return ps;
+            }
+        }
+        StatementStrategy st = new AddStatement();
+        jdbcContextWithStatementStrategy(st);
 
-        ps.close();
-        c.close();
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException{
+    public User get(String id) throws ClassNotFoundException, SQLException {
         Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
@@ -59,7 +62,7 @@ public class UserDao {
         }
     }
 
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
 
@@ -69,14 +72,25 @@ public class UserDao {
             ps = stmt.makePreparedStatement(c);
 
             ps.executeUpdate();
-        } catch (SQLException e) { throw e;}
-        finally {
-            if (ps != null) { try { ps.close(); } catch (SQLException e) {} }
-            if (c != null) { try { c.close(); } catch (SQLException e) {} }
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if (c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
-    public int getCount() throws SQLException{
+    public int getCount() throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -94,17 +108,20 @@ public class UserDao {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) { }
+                } catch (SQLException e) {
+                }
             }
             if (ps != null) {
                 try {
                     ps.close();
-                } catch (SQLException e) { }
+                } catch (SQLException e) {
+                }
             }
             if (c != null) {
                 try {
                     c.close();
-                } catch (SQLException e) { }
+                } catch (SQLException e) {
+                }
             }
         }
     }
