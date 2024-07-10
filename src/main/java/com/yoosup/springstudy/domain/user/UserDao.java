@@ -5,24 +5,28 @@ import java.sql.*;
 
 public class UserDao {
 
+    private JdbcContext jdbcContext;
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+    public void setJdbcContext(JdbcContext jdbcContext) { this.jdbcContext = jdbcContext; }
 
     public void add(final User user) throws SQLException {
-        StatementStrategy st = new StatementStrategy() {
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                PreparedStatement ps =
-                        c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
+        this.jdbcContext.workWithStatementStrategy(
+                new StatementStrategy() {
+                    public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                        PreparedStatement ps =
+                                c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
+                        ps.setString(1, user.getId());
+                        ps.setString(2, user.getName());
+                        ps.setString(3, user.getPassword());
 
-                return ps;
-            }
-        };
+                        return ps;
+                    }
+                }
+        );
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
@@ -47,7 +51,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        jdbcContextWithStatementStrategy(
+        this.jdbcContext.workWithStatementStrategy(
                 new StatementStrategy() {
                     @Override
                     public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
