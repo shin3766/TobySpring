@@ -6,19 +6,15 @@ import java.io.IOException;
 import java.nio.Buffer;
 
 public class Calculator {
-    public Integer calcSum(String filepath) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filepath));
+    public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException {
+        BufferedReader br = null;
 
         try {
+            br = new BufferedReader(new FileReader(filepath));
 
-            Integer sum = 0;
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sum += Integer.valueOf(line);
-            }
+            int ret = callback.doSomethingWithReader(br);
 
-            br.close();
-            return sum;
+            return ret;
         } catch (IOException e) {
             System.out.println(e.getMessage());
             throw e;
