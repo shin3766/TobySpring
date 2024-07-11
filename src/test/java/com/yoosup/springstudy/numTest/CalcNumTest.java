@@ -1,6 +1,7 @@
 package com.yoosup.springstudy.numTest;
 
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,10 +14,10 @@ public class CalcNumTest {
     Calculator calculator;
     String numFilePath;
 
-    @Before
+    @BeforeEach
     public void setup(){
         this.calculator = new Calculator();
-        this.numFilePath = "C:\\Users\\brian\\OneDrive\\Desktop\\spring_practice\\springStudy\\src\\test\\java\\com\\yoosup\\springstudy\\numTest\\numbers.txt";
+        this.numFilePath = "C:\\Users\\brian\\OneDrive\\Desktop\\spring_practice\\springStudy\\src\\test\\resources\\numbers.txt";
     }
 
     @Test
@@ -32,6 +33,11 @@ public class CalcNumTest {
     @Test
     @DisplayName("numbers.txt 파일경로 테스트")
     public void activeNumbersFilePath() {
-        System.out.println(getClass().getResource(numFilePath).getPath());
+        System.out.println(getClass().getResource(this.numFilePath));
+    }
+
+    @Test
+    public void concatenateStrings() throws IOException {
+        assertThat(calculator.concatenate(this.numFilePath), is("1234"));
     }
 }
