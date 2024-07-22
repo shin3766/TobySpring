@@ -3,12 +3,14 @@ package com.yoosup.springstudy;
 import com.yoosup.springstudy.domain.user.DaoFactory;
 import com.yoosup.springstudy.domain.user.User;
 import com.yoosup.springstudy.domain.user.UserDao;
+import com.yoosup.springstudy.domain.user.UserDaoJdbc;
 import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,7 +21,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
-public class UserDaoTest {
+public class UserDaoJdbcTest {
 
     private UserDao dao;
     private User user1;
@@ -31,7 +33,7 @@ public class UserDaoTest {
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(DaoFactory.class);
 
-        this.dao = context.getBean("userDao", UserDao.class);
+        this.dao = context.getBean("userDao", UserDaoJdbc.class);
         this.user1 = new User("gyumee", "박성철", "springno1");
         this.user2 = new User("leegw700", "이길원", "springno2");
         this.user3 = new User("bumjin", "박범진", "springno3");
@@ -81,4 +83,17 @@ public class UserDaoTest {
     public void deleteAllTest() {
 
     }
+
+    @Test
+    public void duplicateKey() {
+        dao.deleteAll();
+
+        dao.add(user1);
+
+        Assertions.assertThrows(DataAccessException.class, () ->
+                    dao.add(user1)
+                );
+    }
+
+
 }

@@ -6,8 +6,8 @@ public class UserDaoCreateTest {
     public static void main(String[] args) {
         DaoFactory daoFactory = new DaoFactory();
 
-        UserDao userDao1 = new DaoFactory().userDao();
-        UserDao userDao2 = new DaoFactory().userDao();
+        UserDaoJdbc userDao1 = new DaoFactory().userDao();
+        UserDaoJdbc userDao2 = new DaoFactory().userDao();
 
         System.out.println("userDao1 = " + userDao1);
         System.out.println("userDao2 = " + userDao2);
@@ -17,8 +17,8 @@ public class UserDaoCreateTest {
         AnnotationConfigApplicationContext context = new
                 AnnotationConfigApplicationContext(DaoFactory.class);
 
-        UserDao userDao3 = context.getBean("userDao", UserDao.class);
-        UserDao userDao4 = context.getBean("userDao", UserDao.class);
+        UserDaoJdbc userDao3 = context.getBean("userDao", UserDaoJdbc.class);
+        UserDaoJdbc userDao4 = context.getBean("userDao", UserDaoJdbc.class);
 
         System.out.println("userDao3 = " + userDao3);
         System.out.println("userDao4 = " + userDao4);
