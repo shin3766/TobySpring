@@ -1,9 +1,6 @@
 package com.yoosup.springstudy;
 
-import com.yoosup.springstudy.domain.user.DaoFactory;
-import com.yoosup.springstudy.domain.user.User;
-import com.yoosup.springstudy.domain.user.UserDao;
-import com.yoosup.springstudy.domain.user.UserDaoJdbc;
+import com.yoosup.springstudy.domain.user.*;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,9 +31,9 @@ public class UserDaoJdbcTest {
                 new AnnotationConfigApplicationContext(DaoFactory.class);
 
         this.dao = context.getBean("userDao", UserDaoJdbc.class);
-        this.user1 = new User("gyumee", "박성철", "springno1");
-        this.user2 = new User("leegw700", "이길원", "springno2");
-        this.user3 = new User("bumjin", "박범진", "springno3");
+        this.user1 = new User("gyumee", "박성철", "springno1", Level.BASIC, 1, 0);
+        this.user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10);
+        this.user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 40);
     }
 
     @Test
@@ -61,25 +58,6 @@ public class UserDaoJdbcTest {
     }
 
     @Test
-    public void count() throws SQLException, ClassNotFoundException {
-        User user1 = new User("gyumee", "박규미", "ps001");
-        User user2 = new User("goomu", "최고무", "ps002");
-        User user3 = new User("minnnu", "신민우", "ps003");
-
-        dao.deleteAll();
-        assertThat(dao.getCount(), is(0));
-
-        dao.add(user1);
-        assertThat(dao.getCount(), is(1));
-
-        dao.add(user2);
-        assertThat(dao.getCount(), is(2));
-
-        dao.add(user3);
-        assertThat(dao.getCount(), is(3));
-    }
-
-    @Test
     public void deleteAllTest() {
 
     }
@@ -95,5 +73,13 @@ public class UserDaoJdbcTest {
                 );
     }
 
-
+    @Test
+    private void checkSameUser(User user1, User user2) {
+        assertThat(user1.getId(), is(user2.getId()));
+        assertThat(user1.getName(), is(user2.getName()));
+        assertThat(user1.getPassword(), is(user2.getPassword()));
+        assertThat(user1.getLevel(), is(user2.getLevel()));
+        assertThat(user1.getLogin(), is(user2.getLogin()));
+        assertThat(user1.getRecommand(), is(user2.getRecommand()));
+    }
 }

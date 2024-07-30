@@ -6,12 +6,36 @@ public class User {
     String name;
     String password;
 
-    public User() { }
+    Level level;
 
-    public User(String id, String name, String password) {
+    public int getLogin() {
+        return login;
+    }
+
+    public int getRecommand() {
+        return recommand;
+    }
+
+    int login;
+    int recommand;
+
+    public User(String id, String name, String password, Level level, int login, int recommand) {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.level = level;
+        this.login = login;
+        this.recommand = recommand;
+    }
+
+    public User() { }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 
     public String getId() {
